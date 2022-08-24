@@ -1,12 +1,12 @@
 const createLayout = require('layout-bmfont-text')
-const inherits = require('inherits')
+// const inherits = require('inherits')
 const createIndices = require('quad-indices')
 const THREE = require('three')
 
 const vertices = require('./lib/vertices')
 const utils = require('./lib/utils')
 
-const Base = THREE.BufferGeometry
+// const Base = THREE.BufferGeometry
 
 module.exports = function createTextGeometry (opt) {
   return new TextGeometry(opt)

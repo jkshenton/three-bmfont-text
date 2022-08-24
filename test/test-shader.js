@@ -5,12 +5,13 @@
  */
 
 const THREE = require('three')
-globalThis.THREE = THREE
+// globalThis.THREE = THREE
 
 const quote = require('sun-tzu-quotes')
 const createOrbitViewer = require('three-orbit-viewer')(THREE)
 const createText = require('../')
 const glslify = require('glslify')
+const path = require('path')
 
 require('./load')({
   font: 'fnt/DejaVu-sdf.fnt',
@@ -35,8 +36,8 @@ function start (font, texture) {
   // geom.setAttribute('line', new Float32Array(lineData));
 
   const material = new THREE.RawShaderMaterial({
-    vertexShader: glslify(__dirname + '/shaders/fx.vert'),
-    fragmentShader: glslify(__dirname + '/shaders/fx.frag'),
+    vertexShader: glslify(path.join(__dirname, '/shaders/fx.vert')),
+    fragmentShader: glslify(path.join(__dirname, '/shaders/fx.frag')),
     uniforms: {
       animate: { type: 'f', value: 1 },
       iGlobalTime: { type: 'f', value: 0 },
@@ -69,8 +70,8 @@ function start (font, texture) {
       next()
     }
 
-    const width = window.innerWidth
-    const height = window.innerHeight
+    // const width = window.innerWidth
+    // const height = window.innerHeight
   })
 
   function next () {
