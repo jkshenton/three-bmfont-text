@@ -8,9 +8,9 @@
   })
  */
 
-var THREE = require('three')
-var createOrbitViewer = require('three-orbit-viewer')(THREE)
-var createText = require('../')
+const THREE = require('three')
+const createOrbitViewer = require('three-orbit-viewer')(THREE)
+const createText = require('../')
 
 require('./load')({
   font: 'fnt/Lato-Regular-64.fnt',
@@ -18,7 +18,7 @@ require('./load')({
 }, start)
 
 function start (font, texture) {
-  var app = createOrbitViewer({
+  const app = createOrbitViewer({
     clearColor: 'rgb(80, 80, 80)',
     clearAlpha: 1.0,
     fov: 65,
@@ -31,26 +31,26 @@ function start (font, texture) {
   app.camera.near = -100
   app.camera.far = 100
 
-  var geom = createText({
+  const geom = createText({
     text: 'this bitmap text\nis rendered with \nan OrthographicCamera',
-    font: font,
+    font,
     align: 'left',
     width: 700,
     flipY: texture.flipY
   })
 
-  var material = new THREE.MeshBasicMaterial({
+  const material = new THREE.MeshBasicMaterial({
     map: texture,
     transparent: true,
     color: 'rgb(230, 230, 230)'
   })
 
-  var layout = geom.layout
-  var text = new THREE.Mesh(geom, material)
-  var padding = 40
+  const layout = geom.layout
+  const text = new THREE.Mesh(geom, material)
+  const padding = 40
   text.position.set(padding, -layout.descender + layout.height + padding, 0)
 
-  var textAnchor = new THREE.Object3D()
+  const textAnchor = new THREE.Object3D()
   textAnchor.add(text)
   textAnchor.scale.multiplyScalar(1 / (window.devicePixelRatio || 1))
   app.scene.add(textAnchor)
@@ -58,8 +58,8 @@ function start (font, texture) {
   // update orthographic
   app.on('tick', function () {
     // update camera
-    var width = app.engine.width
-    var height = app.engine.height
+    const width = app.engine.width
+    const height = app.engine.height
     app.camera.right = width
     app.camera.bottom = height
     app.camera.updateProjectionMatrix()

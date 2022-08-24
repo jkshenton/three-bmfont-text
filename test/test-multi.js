@@ -14,12 +14,12 @@
   })
  */
 
-var THREE = require('three')
-var createOrbitViewer = require('three-orbit-viewer')(THREE)
-var createText = require('../')
-var Promise = require('bluebird')
-var Shader = require('../shaders/multipage')
-var loadFont = Promise.promisify(require('load-bmfont'))
+const THREE = require('three')
+const createOrbitViewer = require('three-orbit-viewer')(THREE)
+const createText = require('../')
+const Promise = require('bluebird')
+const Shader = require('../shaders/multipage')
+const loadFont = Promise.promisify(require('load-bmfont'))
 
 // parallel load our font / textures
 Promise.all([
@@ -33,7 +33,7 @@ Promise.all([
 })
 
 function start (font, textures) {
-  var app = createOrbitViewer({
+  const app = createOrbitViewer({
     clearColor: 'rgb(80, 80, 80)',
     clearAlpha: 1.0,
     fov: 65,
@@ -46,9 +46,9 @@ function start (font, textures) {
   app.camera.near = -100
   app.camera.far = 100
 
-  var geom = createText({
+  const geom = createText({
     multipage: true, // enable page buffers !
-    font: font,
+    font,
     width: 700,
     align: 'left'
   })
@@ -60,27 +60,27 @@ function start (font, textures) {
     'ThreeJS BufferGeometry'
   ].join(' '))
 
-  var material = new THREE.RawShaderMaterial(Shader({
-    textures: textures,
+  const material = new THREE.RawShaderMaterial(Shader({
+    textures,
     transparent: true,
     opacity: 0.95,
     color: 'rgb(230, 230, 230)'
   }))
 
-  var layout = geom.layout
-  var text = new THREE.Mesh(geom, material)
-  var padding = 40
+  const layout = geom.layout
+  const text = new THREE.Mesh(geom, material)
+  const padding = 40
   text.position.set(padding, -layout.descender + layout.height + padding, 0)
 
-  var textAnchor = new THREE.Object3D()
+  const textAnchor = new THREE.Object3D()
   textAnchor.add(text)
   textAnchor.scale.multiplyScalar(1 / (window.devicePixelRatio || 1))
   app.scene.add(textAnchor)
 
   // update orthographic
   app.on('tick', function () {
-    var width = app.engine.width
-    var height = app.engine.height
+    const width = app.engine.width
+    const height = app.engine.height
     app.camera.right = width
     app.camera.bottom = height
     app.camera.updateProjectionMatrix()
@@ -89,7 +89,7 @@ function start (font, textures) {
 
 function loadTexture (path) {
   return new Promise(function (resolve, reject) {
-    const loader = new THREE.TextureLoader();
-    loader.load(path, resolve, reject);
-  });
+    const loader = new THREE.TextureLoader()
+    loader.load(path, resolve, reject)
+  })
 }

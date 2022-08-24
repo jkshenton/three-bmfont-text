@@ -1,13 +1,13 @@
-var assign = require('object-assign')
-var THREE = require('three')
+const assign = require('object-assign')
+const THREE = require('three')
 
 module.exports = function createSDFShader (opt) {
   opt = opt || {}
-  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
-  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001
-  var precision = opt.precision || 'highp'
-  var color = opt.color
-  var map = opt.map
+  const opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
+  const alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001
+  const precision = opt.precision || 'highp'
+  const color = opt.color
+  const map = opt.map
 
   // remove to satisfy r73
   delete opt.map

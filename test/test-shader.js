@@ -4,13 +4,13 @@
   and glslify.
  */
 
-var THREE = require('three')
-globalThis.THREE = THREE;
+const THREE = require('three')
+globalThis.THREE = THREE
 
-var quote = require('sun-tzu-quotes')
-var createOrbitViewer = require('three-orbit-viewer')(THREE)
-var createText = require('../')
-var glslify = require('glslify')
+const quote = require('sun-tzu-quotes')
+const createOrbitViewer = require('three-orbit-viewer')(THREE)
+const createText = require('../')
+const glslify = require('glslify')
 
 require('./load')({
   font: 'fnt/DejaVu-sdf.fnt',
@@ -18,15 +18,15 @@ require('./load')({
 }, start)
 
 function start (font, texture) {
-  var app = createOrbitViewer({
+  const app = createOrbitViewer({
     clearColor: 'rgb(220, 220, 220)',
     clearAlpha: 1.0,
     fov: 55,
     position: new THREE.Vector3(1, 1, -2)
   })
 
-  var geom = createText({
-    font: font,
+  const geom = createText({
+    font,
     align: 'center',
     width: 500,
     flipY: texture.flipY
@@ -34,7 +34,7 @@ function start (font, texture) {
 
   // geom.setAttribute('line', new Float32Array(lineData));
 
-  var material = new THREE.RawShaderMaterial({
+  const material = new THREE.RawShaderMaterial({
     vertexShader: glslify(__dirname + '/shaders/fx.vert'),
     fragmentShader: glslify(__dirname + '/shaders/fx.frag'),
     uniforms: {
@@ -48,18 +48,18 @@ function start (font, texture) {
     depthTest: false
   })
 
-  var text = new THREE.Mesh(geom, material)
+  const text = new THREE.Mesh(geom, material)
 
   // scale it down so it fits in our 3D units
-  var textAnchor = new THREE.Object3D()
+  const textAnchor = new THREE.Object3D()
   textAnchor.scale.multiplyScalar(-0.005)
   textAnchor.add(text)
   app.scene.add(textAnchor)
 
-  var duration = 3
+  const duration = 3
   next()
 
-  var time = 0
+  let time = 0
   app.on('tick', function (dt) {
     time += dt / 1000
     material.uniforms.iGlobalTime.value = time
@@ -69,38 +69,38 @@ function start (font, texture) {
       next()
     }
 
-    var width = window.innerWidth
-    var height = window.innerHeight
+    const width = window.innerWidth
+    const height = window.innerHeight
   })
 
   function next () {
     // set new text string
     geom.update(quote())
 
-    var lines = geom.visibleGlyphs.map(function (glyph) {
+    const lines = geom.visibleGlyphs.map(function (glyph) {
       return glyph.line
     })
 
-    var lineCount = lines.reduce(function (a, b) {
+    const lineCount = lines.reduce(function (a, b) {
       return Math.max(a, b)
     }, 0)
 
     // for each quad, let's give it a vertex attribute
     // with the line index
-    var lineData = lines.map(function (line) {
+    const lineData = lines.map(function (line) {
       // map to 0..1 for attribute
-      var t = lineCount <= 1 ? 1 : (line / (lineCount - 1))
+      const t = lineCount <= 1 ? 1 : (line / (lineCount - 1))
       // quad - 4 verts
-      return [ t, t, t, t ]
+      return [t, t, t, t]
     }).reduce(function (a, b) {
       return a.concat(b)
     }, [])
 
     // update the "line" vertex attribute
-    geom.setAttribute('line', new THREE.BufferAttribute(new Float32Array(lineData), 1));
+    geom.setAttribute('line', new THREE.BufferAttribute(new Float32Array(lineData), 1))
 
     // center the text
-    var layout = geom.layout
+    const layout = geom.layout
     text.position.x = -layout.width / 2
     text.position.y = layout.height / 2
   }

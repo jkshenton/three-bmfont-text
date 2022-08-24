@@ -7,10 +7,10 @@
   crisp rendering at sharp angles.
  */
 
-var THREE = require('three')
-var createOrbitViewer = require('three-orbit-viewer')(THREE)
-var createText = require('../')
-var SDFShader = require('../shaders/sdf')
+const THREE = require('three')
+const createOrbitViewer = require('three-orbit-viewer')(THREE)
+const createText = require('../')
+const SDFShader = require('../shaders/sdf')
 
 // load up a 'fnt' and texture
 require('./load')({
@@ -19,14 +19,14 @@ require('./load')({
 }, start)
 
 function start (font, texture) {
-  var app = createOrbitViewer({
+  const app = createOrbitViewer({
     clearColor: 'rgb(40, 40, 40)',
     clearAlpha: 1.0,
     fov: 55,
     position: new THREE.Vector3(0, -4, -2)
   })
 
-  var maxAni = app.renderer.getMaxAnisotropy()
+  const maxAni = app.renderer.getMaxAnisotropy()
 
   // setup our texture with some nice mipmapping etc
   texture.needsUpdate = true
@@ -35,26 +35,26 @@ function start (font, texture) {
   texture.generateMipmaps = true
   texture.anisotropy = maxAni
 
-  var copy = getCopy()
+  const copy = getCopy()
 
   // create our text geometry
-  var geom = createText({
+  const geom = createText({
     text: copy, // the string to render
-    font: font, // the bitmap font definition
+    font, // the bitmap font definition
     width: 1000 // optional width for word-wrap
   })
 
   // here we use 'three-bmfont-text/shaders/sdf'
   // to help us build a shader material
-  var material = new THREE.RawShaderMaterial(SDFShader({
+  const material = new THREE.RawShaderMaterial(SDFShader({
     map: texture,
     side: THREE.DoubleSide,
     transparent: true,
     color: 'rgb(230, 230, 230)'
   }))
 
-  var layout = geom.layout
-  var text = new THREE.Mesh(geom, material)
+  const layout = geom.layout
+  const text = new THREE.Mesh(geom, material)
   // center it horizontally
   text.position.x = -layout.width / 2
   // origin uses bottom left of last line
@@ -62,7 +62,7 @@ function start (font, texture) {
   text.position.y = layout.height * 1.035
 
   // scale it down so it fits in our 3D units
-  var textAnchor = new THREE.Object3D()
+  const textAnchor = new THREE.Object3D()
   textAnchor.scale.multiplyScalar(-0.005)
   textAnchor.add(text)
   app.scene.add(textAnchor)

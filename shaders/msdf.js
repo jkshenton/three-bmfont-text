@@ -1,21 +1,21 @@
-var assign = require('object-assign')
-var THREE = require('three')
+const assign = require('object-assign')
+const THREE = require('three')
 
 module.exports = function createMSDFShader (opt) {
-  opt = opt || {};
-  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1;
-  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001;
-  var precision = opt.precision || 'highp';
-  var color = opt.color;
-  var map = opt.map;
-  var negate = typeof opt.negate === 'boolean' ? opt.negate : true;
+  opt = opt || {}
+  const opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
+  const alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001
+  const precision = opt.precision || 'highp'
+  const color = opt.color
+  const map = opt.map
+  const negate = typeof opt.negate === 'boolean' ? opt.negate : true
 
   // remove to satisfy r73
-  delete opt.map;
-  delete opt.color;
-  delete opt.precision;
-  delete opt.opacity;
-  delete opt.negate;
+  delete opt.map
+  delete opt.color
+  delete opt.precision
+  delete opt.opacity
+  delete opt.negate
 
   return assign({
     uniforms: {
@@ -58,5 +58,5 @@ module.exports = function createMSDFShader (opt) {
         : '  if (gl_FragColor.a < ' + alphaTest + ') discard;',
       '}'
     ].join('\n')
-  }, opt);
-};
+  }, opt)
+}

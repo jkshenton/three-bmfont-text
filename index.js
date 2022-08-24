@@ -1,37 +1,34 @@
-var createLayout = require('layout-bmfont-text')
-var inherits = require('inherits')
-var createIndices = require('quad-indices')
-var THREE = require('three')
+const createLayout = require('layout-bmfont-text')
+const inherits = require('inherits')
+const createIndices = require('quad-indices')
+const THREE = require('three')
 
-var vertices = require('./lib/vertices')
-var utils = require('./lib/utils')
+const vertices = require('./lib/vertices')
+const utils = require('./lib/utils')
 
-var Base = THREE.BufferGeometry
+const Base = THREE.BufferGeometry
 
 module.exports = function createTextGeometry (opt) {
   return new TextGeometry(opt)
 }
 
 class TextGeometry extends THREE.BufferGeometry {
-
-  constructor(opt) {
-
-    super();
+  constructor (opt) {
+    super()
 
     if (typeof opt === 'string') {
-      opt = { text: opt };
+      opt = { text: opt }
     }
 
     // use these as default values for any subsequent
     // calls to update()
-    this._opt = Object.assign({}, opt);
+    this._opt = Object.assign({}, opt)
 
     // also do an initial setup...
-    if (opt) this.update(opt);
-
+    if (opt) this.update(opt)
   }
 
-  update(opt) {
+  update (opt) {
     if (typeof opt === 'string') {
       opt = { text: opt }
     }
@@ -46,18 +43,18 @@ class TextGeometry extends THREE.BufferGeometry {
     this.layout = createLayout(opt)
 
     // get vec2 texcoords
-    var flipY = opt.flipY !== false
+    const flipY = opt.flipY !== false
 
     // the desired BMFont data
-    var font = opt.font
+    const font = opt.font
 
     // determine texture size from font file
-    var texWidth = font.common.scaleW
-    var texHeight = font.common.scaleH
+    const texWidth = font.common.scaleW
+    const texHeight = font.common.scaleH
 
     // get visible glyphs
-    var glyphs = this.layout.glyphs.filter(function (glyph) {
-      var bitmap = glyph.data
+    const glyphs = this.layout.glyphs.filter(function (glyph) {
+      const bitmap = glyph.data
       return bitmap.width * bitmap.height > 0
     })
 
@@ -65,9 +62,9 @@ class TextGeometry extends THREE.BufferGeometry {
     this.visibleGlyphs = glyphs
 
     // get common vertex data
-    var positions = vertices.positions(glyphs)
-    var uvs = vertices.uvs(glyphs, texWidth, texHeight, flipY)
-    var indices = createIndices([], {
+    const positions = vertices.positions(glyphs)
+    const uvs = vertices.uvs(glyphs, texWidth, texHeight, flipY)
+    const indices = createIndices([], {
       clockwise: true,
       type: 'uint16',
       count: glyphs.length
@@ -84,21 +81,21 @@ class TextGeometry extends THREE.BufferGeometry {
       this.removeAttribute('page')
     } else if (opt.multipage) {
       // enable multipage rendering
-      var pages = vertices.pages(glyphs)
+      const pages = vertices.pages(glyphs)
       this.setAttribute('page', new THREE.BufferAttribute(pages, 1))
-    }    
+    }
   }
 
-  computeBoundingSphere() {
+  computeBoundingSphere () {
     if (this.boundingSphere === null) {
-      this.boundingSphere = new THREE.Sphere();
+      this.boundingSphere = new THREE.Sphere()
     }
 
-    var positions = this.attributes.position.array;
-    var itemSize = this.attributes.position.itemSize;
+    const positions = this.attributes.position.array
+    const itemSize = this.attributes.position.itemSize
     if (!positions || !itemSize || positions.length < 2) {
-      this.boundingSphere.radius = 0;
-      this.boundingSphere.center.set(0, 0, 0);
+      this.boundingSphere.radius = 0
+      this.boundingSphere.center.set(0, 0, 0)
       return
     }
     utils.computeSphere(positions, this.boundingSphere)
@@ -109,72 +106,72 @@ class TextGeometry extends THREE.BufferGeometry {
     }
   }
 
-  computeBoundingBox() {
+  computeBoundingBox () {
     if (this.boundingBox === null) {
-      this.boundingBox = new THREE.Box3();
+      this.boundingBox = new THREE.Box3()
     }
 
-    var bbox = this.boundingBox;
-    var positions = this.attributes.position.array;
-    var itemSize = this.attributes.position.itemSize;
+    const bbox = this.boundingBox
+    const positions = this.attributes.position.array
+    const itemSize = this.attributes.position.itemSize
     if (!positions || !itemSize || positions.length < 2) {
       bbox.makeEmpty()
       return
     }
-    utils.computeBox(positions, bbox);
+    utils.computeBox(positions, bbox)
   }
 }
-// 
+//
 // function TextGeometry (opt) {
 //   Base.call(this)
-// 
+//
 //   if (typeof opt === 'string') {
 //     opt = { text: opt }
 //   }
-// 
+//
 //   // use these as default values for any subsequent
 //   // calls to update()
 //   this._opt = Object.assign({}, opt)
-// 
+//
 //   // also do an initial setup...
 //   if (opt) this.update(opt)
 // }
-// 
+//
 // inherits(TextGeometry, Base)
-// 
+//
 // TextGeometry.prototype.update = function (opt) {
 //   if (typeof opt === 'string') {
 //     opt = { text: opt }
 //   }
-// 
+//
 //   // use constructor defaults
 //   opt = Object.assign({}, this._opt, opt)
-// 
+//
 //   if (!opt.font) {
 //     throw new TypeError('must specify a { font } in options')
 //   }
-// 
+//
 //   this.layout = createLayout(opt)
-// 
+//
 //   // get vec2 texcoords
 //   var flipY = opt.flipY !== false
-// 
+//
 //   // the desired BMFont data
 //   var font = opt.font
-// 
+//
 //   // determine texture size from font file
 //   var texWidth = font.common.scaleW
 //   var texHeight = font.common.scaleH
-// 
+//
 //   // get visible glyphs
 //   var glyphs = this.layout.glyphs.filter(function (glyph) {
 //     var bitmap = glyph.data
 //     return bitmap.width * bitmap.height > 0
 //   })
-// 
+//
 //   // provide visible glyphs for convenience
 //   this.visibleGlyphs = glyphs
-// 
+//
 //   // get common vertex data
 //   var positions = vertices.positions(glyphs)
 //   var uvs = vertices.uvs(glyphs, texWidth, texHeight, flipY)
@@ -183,12 +180,12 @@ class TextGeometry extends THREE.BufferGeometry {
 //     type: 'uint16',
 //     count: glyphs.length
 //   })
-// 
+//
 //   // update vertex data
 //   this.setIndex(indices)
 //   this.setAttribute('position', new THREE.BufferAttribute(positions, 2))
 //   this.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
-// 
+//
 //   // update multipage data
 //   if (!opt.multipage && 'page' in this.attributes) {
 //     // disable multipage rendering
@@ -199,12 +196,12 @@ class TextGeometry extends THREE.BufferGeometry {
 //     this.setAttribute('page', new THREE.BufferAttribute(pages, 1))
 //   }
 // }
-// 
+//
 // TextGeometry.prototype.computeBoundingSphere = function () {
 //   if (this.boundingSphere === null) {
 //     this.boundingSphere = new THREE.Sphere()
 //   }
-// 
+//
 //   var positions = this.attributes.position.array
 //   var itemSize = this.attributes.position.itemSize
 //   if (!positions || !itemSize || positions.length < 2) {
@@ -219,12 +216,12 @@ class TextGeometry extends THREE.BufferGeometry {
 //       '"position" attribute is likely to have NaN values.')
 //   }
 // }
-// 
+//
 // TextGeometry.prototype.computeBoundingBox = function () {
 //   if (this.boundingBox === null) {
 //     this.boundingBox = new THREE.Box3()
 //   }
-// 
+//
 //   var bbox = this.boundingBox
 //   var positions = this.attributes.position.array
 //   var itemSize = this.attributes.position.itemSize

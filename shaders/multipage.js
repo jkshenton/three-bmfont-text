@@ -1,16 +1,16 @@
-var assign = require('object-assign')
-var THREE = require('three')
+const assign = require('object-assign')
+const THREE = require('three')
 
 module.exports = function createMultipageShader (opt) {
   opt = opt || {}
-  var opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
-  var precision = opt.precision || 'highp'
-  var alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001
+  const opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
+  const precision = opt.precision || 'highp'
+  const alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001
 
-  var textures = opt.textures || []
-  textures = Array.isArray(textures) ? textures : [ textures ]
+  let textures = opt.textures || []
+  textures = Array.isArray(textures) ? textures : [textures]
 
-  var baseUniforms = {}
+  const baseUniforms = {}
   textures.forEach(function (tex, i) {
     baseUniforms['texture' + i] = {
       type: 't',
@@ -18,12 +18,12 @@ module.exports = function createMultipageShader (opt) {
     }
   })
 
-  var samplers = textures.map(function (tex, i) {
+  const samplers = textures.map(function (tex, i) {
     return 'uniform sampler2D texture' + i + ';'
   }).join('\n')
 
-  var body = textures.map(function (tex, i) {
-    var cond = i === 0 ? 'if' : 'else if'
+  const body = textures.map(function (tex, i) {
+    const cond = i === 0 ? 'if' : 'else if'
     return [
       cond + ' (vPage == ' + i + '.0) {',
       'sampleColor = texture2D(texture' + i + ', vUv);',
@@ -31,7 +31,7 @@ module.exports = function createMultipageShader (opt) {
     ].join('\n')
   }).join('\n')
 
-  var color = opt.color
+  const color = opt.color
 
   // remove to satisfy r73
   delete opt.textures
@@ -39,11 +39,11 @@ module.exports = function createMultipageShader (opt) {
   delete opt.precision
   delete opt.opacity
 
-  var attributes = {
+  let attributes = {
     attributes: { page: { type: 'f', value: 0 } }
   }
 
-  var threeVers = (parseInt(THREE.REVISION, 10) || 0) | 0
+  const threeVers = (parseInt(THREE.REVISION, 10) || 0) | 0
   if (threeVers >= 72) {
     attributes = undefined
   }
