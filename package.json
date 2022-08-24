@@ -1,5 +1,5 @@
 {
-  "name": "@stur86/three-bmfont-text",
+  "name": "@jkshenton/three-bmfont-text",
   "version": "3.0.3",
   "description": "renders BMFont files in ThreeJS with word-wrapping (fork: uses internal THREE import)",
   "main": "index.js",
@@ -13,6 +13,10 @@
     {
       "name": "Simone Sturniolo",
       "email": "simonesturniolo@gmail.com"
+    },
+    {
+      "name": "Kane Shenton",
+      "email": "jkshenton@gmail.com"
     }
   ],
   "dependencies": {
