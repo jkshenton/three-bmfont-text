@@ -1,5 +1,4 @@
 const createLayout = require('layout-bmfont-text')
-// const inherits = require('inherits')
 const createIndices = require('quad-indices')
 const THREE = require('three')
 
