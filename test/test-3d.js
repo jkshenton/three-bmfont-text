@@ -8,7 +8,6 @@
  */
 
 const THREE = require('three')
-const createOrbitViewer = require('three-orbit-viewer')(THREE)
 const createText = require('../')
 const SDFShader = require('../shaders/sdf')
 
@@ -19,14 +18,25 @@ require('./load')({
 }, start)
 
 function start (font, texture) {
-  const app = createOrbitViewer({
-    clearColor: 'rgb(40, 40, 40)',
-    clearAlpha: 1.0,
-    fov: 55,
-    position: new THREE.Vector3(0, -4, -2)
-  })
+  // Create renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setClearColor(0x282828, 1.0)
+  document.body.appendChild(renderer.domElement)
 
-  const maxAni = app.renderer.getMaxAnisotropy()
+  // Create scene
+  const scene = new THREE.Scene()
+
+  // Add some ambient light
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+  scene.add(ambientLight)
+
+  // Create camera
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera.position.set(0, -4, 8)
+  camera.lookAt(0, 0, 0)
+
+  const maxAni = renderer.capabilities.getMaxAnisotropy()
 
   // setup our texture with some nice mipmapping etc
   texture.needsUpdate = true
@@ -39,7 +49,7 @@ function start (font, texture) {
 
   // create our text geometry
   const geom = createText({
-    text: copy, // the string to render
+    text: getCopy(), // the string to render
     font, // the bitmap font definition
     width: 1000 // optional width for word-wrap
   })
@@ -55,21 +65,85 @@ function start (font, texture) {
 
   const layout = geom.layout
   const text = new THREE.Mesh(geom, material)
+  
+  // Debug: log the geometry info
+  console.log('Layout:', layout)
+  console.log('Geometry positions:', geom.getAttribute('position').count)
+  
   // center it horizontally
   text.position.x = -layout.width / 2
   // origin uses bottom left of last line
   // so we need to move it down a fair bit
   text.position.y = layout.height * 1.035
+  text.position.z = 0
 
   // scale it down so it fits in our 3D units
   const textAnchor = new THREE.Object3D()
-  textAnchor.scale.multiplyScalar(-0.005)
+  textAnchor.scale.multiplyScalar(0.01)
+  textAnchor.rotation.x = Math.PI // Flip 180 degrees to be right-side up
   textAnchor.add(text)
-  app.scene.add(textAnchor)
+  textAnchor.position.set(0, 0, 0)
+  scene.add(textAnchor)
 
-  // scroll text
-  app.on('tick', function (t) {
+  // Simple mouse controls
+  let mouseX = 0
+  let mouseY = 0
+  let isMouseDown = false
+  let cameraDistance = camera.position.length() // Track current zoom distance
+
+  document.addEventListener('mousedown', function () {
+    isMouseDown = true
+  })
+
+  document.addEventListener('mouseup', function () {
+    isMouseDown = false
+  })
+
+  document.addEventListener('mousemove', function (event) {
+    if (isMouseDown) {
+      mouseX = (event.clientX / window.innerWidth) * 2 - 1
+      mouseY = -(event.clientY / window.innerHeight) * 2 + 1
+    }
+  })
+
+  // Add scroll wheel zoom
+  document.addEventListener('wheel', function (event) {
+    event.preventDefault()
+    
+    // Zoom factor based on wheel delta
+    const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9
+    cameraDistance = Math.max(1, Math.min(50, cameraDistance * zoomFactor))
+    
+    // Scale the camera position to maintain direction but change distance
+    camera.position.normalize().multiplyScalar(cameraDistance)
+    camera.lookAt(0, 0, 0)
+  })
+
+  // Animation loop
+  function animate () {
+    requestAnimationFrame(animate)
+
+    // Apply mouse rotation (maintain current zoom distance)
+    if (isMouseDown) {
+      camera.position.x = Math.sin(mouseX * Math.PI) * cameraDistance
+      camera.position.z = Math.cos(mouseX * Math.PI) * cameraDistance
+      camera.position.y = mouseY * cameraDistance
+      camera.lookAt(0, 0, 0)
+    }
+
+    // scroll text (adjust direction due to rotation)
     text.position.y -= 0.9
+
+    renderer.render(scene, camera)
+  }
+
+  animate()
+
+  // Handle window resize
+  window.addEventListener('resize', function () {
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize(window.innerWidth, window.innerHeight)
   })
 }
 

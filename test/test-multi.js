@@ -15,7 +15,6 @@
  */
 
 const THREE = require('three')
-const createOrbitViewer = require('three-orbit-viewer')(THREE)
 const createText = require('../')
 const Promise = require('bluebird')
 const Shader = require('../shaders/multipage')
@@ -33,18 +32,21 @@ Promise.all([
 })
 
 function start (font, textures) {
-  const app = createOrbitViewer({
-    clearColor: 'rgb(80, 80, 80)',
-    clearAlpha: 1.0,
-    fov: 65,
-    position: new THREE.Vector3()
-  })
+  // Create renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setClearColor(0x505050, 1.0)
+  document.body.appendChild(renderer.domElement)
 
-  app.camera = new THREE.OrthographicCamera()
-  app.camera.left = 0
-  app.camera.top = 0
-  app.camera.near = -100
-  app.camera.far = 100
+  // Create scene
+  const scene = new THREE.Scene()
+
+  // Create camera
+  const camera = new THREE.OrthographicCamera()
+  camera.left = 0
+  camera.top = 0
+  camera.near = -100
+  camera.far = 100
 
   const geom = createText({
     multipage: true, // enable page buffers !
@@ -75,15 +77,33 @@ function start (font, textures) {
   const textAnchor = new THREE.Object3D()
   textAnchor.add(text)
   textAnchor.scale.multiplyScalar(1 / (window.devicePixelRatio || 1))
-  app.scene.add(textAnchor)
+  scene.add(textAnchor)
 
-  // update orthographic
-  app.on('tick', function () {
-    const width = app.engine.width
-    const height = app.engine.height
-    app.camera.right = width
-    app.camera.bottom = height
-    app.camera.updateProjectionMatrix()
+  // Animation loop
+  function animate () {
+    requestAnimationFrame(animate)
+
+    // update camera
+    const width = window.innerWidth
+    const height = window.innerHeight
+    camera.right = width
+    camera.bottom = height
+    camera.updateProjectionMatrix()
+
+    renderer.setSize(width, height)
+    renderer.render(scene, camera)
+  }
+
+  animate()
+
+  // Handle window resize
+  window.addEventListener('resize', function () {
+    const width = window.innerWidth
+    const height = window.innerHeight
+    camera.right = width
+    camera.bottom = height
+    camera.updateProjectionMatrix()
+    renderer.setSize(width, height)
   })
 }
 

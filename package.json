@@ -1,6 +1,6 @@
 {
   "name": "@jkshenton/three-bmfont-text",
-  "version": "3.0.7",
+  "version": "3.1.0",
   "description": "renders BMFont files in ThreeJS with word-wrapping (fork: uses internal THREE import)",
   "main": "index.js",
   "license": "MIT",
@@ -23,23 +23,22 @@
     "layout-bmfont-text": "^1.3.4",
     "object-assign": "^4.1.1",
     "quad-indices": "^2.0.1",
-    "three-buffer-vertex-data": "^1.1.0",
-    "three": "^0.137.0"
+    "three": "^0.178.0",
+    "three-buffer-vertex-data": "^1.1.0"
   },
   "devDependencies": {
-    "array-shuffle": "^1.0.1",
+    "array-shuffle": "^3.0.0",
     "bluebird": "^3.7.2",
     "browserify": "^17.0.0",
     "budo": "^11.8.4",
-    "eslint": "^8.23.0",
+    "eslint": "^9.31.0",
     "glsl-aastep": "^1.0.1",
     "glsl-noise": "0.0.0",
     "glslify": "^7.1.1",
     "load-bmfont": "^1.4.1",
-    "nice-color-palettes": "^3.0.0",
+    "nice-color-palettes": "^4.0.0",
     "standard": "^17.0.0",
     "sun-tzu-quotes": "^1.0.0",
-    "three-orbit-viewer": "^69.3.1",
     "uglify-js": "^3.17.0"
   },
   "scripts": {
@@ -76,5 +75,8 @@
     "type": "git",
     "url": "git@github.com:jkshenton/three-bmfont-text.git"
   },
-  "homepage": "https://github.com/jkshenton/three-bmfont-text"
+  "homepage": "https://github.com/jkshenton/three-bmfont-text",
+  "standard": {
+    "env": ["browser"]
+  }
 }

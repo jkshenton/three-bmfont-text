@@ -17,9 +17,9 @@ module.exports = function createSDFShader (opt) {
 
   return assign({
     uniforms: {
-      opacity: { type: 'f', value: opacity },
-      map: { type: 't', value: map || new THREE.Texture() },
-      color: { type: 'c', value: new THREE.Color(color) }
+      opacity: { value: opacity },
+      map: { value: map || new THREE.Texture() },
+      color: { value: new THREE.Color(color) }
     },
     vertexShader: [
       'attribute vec2 uv;',

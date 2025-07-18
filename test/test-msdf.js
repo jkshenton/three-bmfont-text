@@ -9,7 +9,6 @@
  */
 
 const THREE = require('three')
-const createOrbitViewer = require('three-orbit-viewer')(THREE)
 const shuffle = require('array-shuffle')
 const quotes = shuffle(require('sun-tzu-quotes/quotes.json').join(' ').split('.'))
 const createText = require('../')
@@ -24,40 +23,63 @@ require('./load')({
 }, start)
 
 function start (font, texture) {
-  const app = createOrbitViewer({
-    clearColor: background,
-    clearAlpha: 1.0,
-    fov: 65,
-    position: new THREE.Vector3()
-  })
+  // Create renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setClearColor(background, 1.0)
+  document.body.appendChild(renderer.domElement)
 
-  app.camera = new THREE.OrthographicCamera()
-  app.camera.left = 0
-  app.camera.top = 0
-  app.camera.near = -1
-  app.camera.far = 1000
+  // Create scene
+  const scene = new THREE.Scene()
+
+  // Create camera
+  const camera = new THREE.OrthographicCamera()
+  camera.left = 0
+  camera.top = 0
+  camera.near = -1
+  camera.far = 1000
 
   const container = new THREE.Object3D()
-  app.scene.add(container)
+  scene.add(container)
   const count = 25
   for (let i = 0; i < count; i++) {
     createGlyph()
   }
 
   let time = 0
-  // update orthographic
-  app.on('tick', function (dt) {
-    time += dt / 1000
+  // Animation loop
+  function animate () {
+    requestAnimationFrame(animate)
+
+    time += 0.016 // approximate delta time
     const s = (Math.sin(time * 0.5) * 0.5 + 0.5) * 2.0 + 0.5
     container.scale.set(s, s, s)
+
     // update camera
-    const width = app.engine.width
-    const height = app.engine.height
-    app.camera.left = -width / 2
-    app.camera.right = width / 2
-    app.camera.top = -height / 2
-    app.camera.bottom = height / 2
-    app.camera.updateProjectionMatrix()
+    const width = window.innerWidth
+    const height = window.innerHeight
+    camera.left = -width / 2
+    camera.right = width / 2
+    camera.top = -height / 2
+    camera.bottom = height / 2
+    camera.updateProjectionMatrix()
+
+    renderer.setSize(width, height)
+    renderer.render(scene, camera)
+  }
+
+  animate()
+
+  // Handle window resize
+  window.addEventListener('resize', function () {
+    const width = window.innerWidth
+    const height = window.innerHeight
+    camera.left = -width / 2
+    camera.right = width / 2
+    camera.top = -height / 2
+    camera.bottom = height / 2
+    camera.updateProjectionMatrix()
+    renderer.setSize(width, height)
   })
 
   function createGlyph () {

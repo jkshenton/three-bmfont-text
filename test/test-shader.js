@@ -8,7 +8,6 @@ const THREE = require('three')
 // globalThis.THREE = THREE
 
 const quote = require('sun-tzu-quotes')
-const createOrbitViewer = require('three-orbit-viewer')(THREE)
 const createText = require('../')
 const glslify = require('glslify')
 const path = require('path')
@@ -19,12 +18,18 @@ require('./load')({
 }, start)
 
 function start (font, texture) {
-  const app = createOrbitViewer({
-    clearColor: 'rgb(220, 220, 220)',
-    clearAlpha: 1.0,
-    fov: 55,
-    position: new THREE.Vector3(1, 1, -2)
-  })
+  // Create renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.setSize(window.innerWidth, window.innerHeight)
+  renderer.setClearColor(0xdcdcdc, 1.0)
+  document.body.appendChild(renderer.domElement)
+
+  // Create scene
+  const scene = new THREE.Scene()
+
+  // Create camera
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 1000)
+  camera.position.set(1, 1, -2)
 
   const geom = createText({
     font,
@@ -39,10 +44,10 @@ function start (font, texture) {
     vertexShader: glslify(path.join(__dirname, '/shaders/fx.vert')),
     fragmentShader: glslify(path.join(__dirname, '/shaders/fx.frag')),
     uniforms: {
-      animate: { type: 'f', value: 1 },
-      iGlobalTime: { type: 'f', value: 0 },
-      map: { type: 't', value: texture },
-      color: { type: 'c', value: new THREE.Color('#000') }
+      animate: { value: 1 },
+      iGlobalTime: { value: 0 },
+      map: { value: texture },
+      color: { value: new THREE.Color('#000') }
     },
     transparent: true,
     side: THREE.DoubleSide,
@@ -55,14 +60,18 @@ function start (font, texture) {
   const textAnchor = new THREE.Object3D()
   textAnchor.scale.multiplyScalar(-0.005)
   textAnchor.add(text)
-  app.scene.add(textAnchor)
+  scene.add(textAnchor)
 
   const duration = 3
   next()
 
   let time = 0
-  app.on('tick', function (dt) {
-    time += dt / 1000
+
+  // Animation loop
+  function animate () {
+    requestAnimationFrame(animate)
+
+    time += 0.016 // approximate delta time
     material.uniforms.iGlobalTime.value = time
     material.uniforms.animate.value = time / duration
     if (time > duration) {
@@ -70,8 +79,16 @@ function start (font, texture) {
       next()
     }
 
-    // const width = window.innerWidth
-    // const height = window.innerHeight
+    renderer.render(scene, camera)
+  }
+
+  animate()
+
+  // Handle window resize
+  window.addEventListener('resize', function () {
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize(window.innerWidth, window.innerHeight)
   })
 
   function next () {

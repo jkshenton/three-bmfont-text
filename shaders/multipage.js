@@ -13,7 +13,6 @@ module.exports = function createMultipageShader (opt) {
   const baseUniforms = {}
   textures.forEach(function (tex, i) {
     baseUniforms['texture' + i] = {
-      type: 't',
       value: tex
     }
   })
@@ -50,8 +49,8 @@ module.exports = function createMultipageShader (opt) {
 
   return assign({
     uniforms: assign({}, baseUniforms, {
-      opacity: { type: 'f', value: opacity },
-      color: { type: 'c', value: new THREE.Color(color) }
+      opacity: { value: opacity },
+      color: { value: new THREE.Color(color) }
     }),
     vertexShader: [
       'attribute vec4 position;',
