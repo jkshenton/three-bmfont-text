@@ -4,15 +4,20 @@
   and glslify.
  */
 
-const THREE = require('three')
+import * as THREE from 'three'
 // globalThis.THREE = THREE
 
-const quote = require('sun-tzu-quotes')
-const createText = require('../')
-const glslify = require('glslify')
-const path = require('path')
+import quote from 'sun-tzu-quotes'
+import createText from '../index.js'
+import glslify from 'glslify'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import loadFont from './load.js'
 
-require('./load')({
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+loadFont({
   font: 'fnt/DejaVu-sdf.fnt',
   image: 'fnt/DejaVu-sdf.png'
 }, start)

@@ -1,7 +1,7 @@
-const assign = require('object-assign')
-const THREE = require('three')
+import assign from 'object-assign'
+import * as THREE from 'three'
 
-module.exports = function createMSDFShader (opt) {
+export default function createMSDFShader (opt) {
   opt = opt || {}
   const opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
   const alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001

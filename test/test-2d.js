@@ -8,10 +8,12 @@
   })
  */
 
-const THREE = require('three')
-const createText = require('../')
+import * as THREE from 'three'
+import createText from '../index.js'
 
-require('./load')({
+import loadFont from './load.js'
+
+loadFont({
   font: 'fnt/Lato-Regular-64.fnt',
   image: 'fnt/lato.png'
 }, start)

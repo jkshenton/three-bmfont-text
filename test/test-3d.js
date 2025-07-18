@@ -7,12 +7,14 @@
   crisp rendering at sharp angles.
  */
 
-const THREE = require('three')
-const createText = require('../')
-const SDFShader = require('../shaders/sdf')
+import * as THREE from 'three'
+import createText from '../index.js'
+import SDFShader from '../shaders/sdf.js'
 
 // load up a 'fnt' and texture
-require('./load')({
+import loadFont from './load.js'
+
+loadFont({
   font: 'fnt/DejaVu-sdf.fnt',
   image: 'fnt/DejaVu-sdf.png'
 }, start)
@@ -45,8 +47,6 @@ function start (font, texture) {
   texture.generateMipmaps = true
   texture.anisotropy = maxAni
 
-  const copy = getCopy()
-
   // create our text geometry
   const geom = createText({
     text: getCopy(), // the string to render
@@ -65,11 +65,11 @@ function start (font, texture) {
 
   const layout = geom.layout
   const text = new THREE.Mesh(geom, material)
-  
+
   // Debug: log the geometry info
   console.log('Layout:', layout)
   console.log('Geometry positions:', geom.getAttribute('position').count)
-  
+
   // center it horizontally
   text.position.x = -layout.width / 2
   // origin uses bottom left of last line
@@ -109,11 +109,11 @@ function start (font, texture) {
   // Add scroll wheel zoom
   document.addEventListener('wheel', function (event) {
     event.preventDefault()
-    
+
     // Zoom factor based on wheel delta
     const zoomFactor = event.deltaY > 0 ? 1.1 : 0.9
     cameraDistance = Math.max(1, Math.min(50, cameraDistance * zoomFactor))
-    
+
     // Scale the camera position to maintain direction but change distance
     camera.position.normalize().multiplyScalar(cameraDistance)
     camera.lookAt(0, 0, 0)

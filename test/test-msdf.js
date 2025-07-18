@@ -8,16 +8,19 @@
   })
  */
 
-const THREE = require('three')
-const shuffle = require('array-shuffle')
-const quotes = shuffle(require('sun-tzu-quotes/quotes.json').join(' ').split('.'))
-const createText = require('../')
-const MSDFShader = require('../shaders/msdf')
-const palettes = require('nice-color-palettes')
+import * as THREE from 'three'
+import shuffle from 'array-shuffle'
+import quotes from 'sun-tzu-quotes/quotes.json'
+import createText from '../index.js'
+import MSDFShader from '../shaders/msdf.js'
+import palettes from 'nice-color-palettes'
+import loadFont from './load.js'
+
+const shuffledQuotes = shuffle(quotes.join(' ').split('.'))
 const palette = palettes[5]
 const background = palette.shift()
 
-require('./load')({
+loadFont({
   font: 'fnt/Roboto-msdf.json',
   image: 'fnt/Roboto-msdf.png'
 }, start)
@@ -85,7 +88,7 @@ function start (font, texture) {
   function createGlyph () {
     const angle = (Math.random() * 2 - 1) * Math.PI
     const geom = createText({
-      text: quotes[Math.floor(Math.random() * quotes.length)].split(/\s+/g).slice(0, 6).join(' '),
+      text: shuffledQuotes[Math.floor(Math.random() * shuffledQuotes.length)].split(/\s+/g).slice(0, 6).join(' '),
       font,
       align: 'left',
       flipY: texture.flipY

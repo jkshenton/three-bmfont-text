@@ -1,7 +1,7 @@
-const assign = require('object-assign')
-const THREE = require('three')
+import assign from 'object-assign'
+import * as THREE from 'three'
 
-module.exports = function createBasicShader (opt) {
+export default function createBasicShader (opt) {
   opt = opt || {}
   const opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
   const alphaTest = typeof opt.alphaTest === 'number' ? opt.alphaTest : 0.0001

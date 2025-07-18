@@ -1,7 +1,7 @@
-const assign = require('object-assign')
-const THREE = require('three')
+import assign from 'object-assign'
+import * as THREE from 'three'
 
-module.exports = function createMultipageShader (opt) {
+export default function createMultipageShader (opt) {
   opt = opt || {}
   const opacity = typeof opt.opacity === 'number' ? opt.opacity : 1
   const precision = opt.precision || 'highp'

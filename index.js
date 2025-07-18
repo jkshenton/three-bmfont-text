@@ -1,13 +1,13 @@
-const createLayout = require('layout-bmfont-text')
-const createIndices = require('quad-indices')
-const THREE = require('three')
+import createLayout from 'layout-bmfont-text'
+import createIndices from 'quad-indices'
+import * as THREE from 'three'
 
-const vertices = require('./lib/vertices')
-const utils = require('./lib/utils')
+import * as vertices from './lib/vertices.js'
+import * as utils from './lib/utils.js'
 
 // const Base = THREE.BufferGeometry
 
-module.exports = function createTextGeometry (opt) {
+export default function createTextGeometry (opt) {
   return new TextGeometry(opt)
 }
 

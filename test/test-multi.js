@@ -14,15 +14,17 @@
   })
  */
 
-const THREE = require('three')
-const createText = require('../')
-const Promise = require('bluebird')
-const Shader = require('../shaders/multipage')
-const loadFont = Promise.promisify(require('load-bmfont'))
+import * as THREE from 'three'
+import createText from '../index.js'
+import Promise from 'bluebird'
+import Shader from '../shaders/multipage.js'
+import loadFont from 'load-bmfont'
+
+const loadFontAsync = Promise.promisify(loadFont)
 
 // parallel load our font / textures
 Promise.all([
-  loadFont('fnt/Norwester-Multi-64.fnt'),
+  loadFontAsync('fnt/Norwester-Multi-64.fnt'),
   loadTexture('fnt/Norwester-Multi_0.png'),
   loadTexture('fnt/Norwester-Multi_1.png'),
   loadTexture('fnt/Norwester-Multi_2.png'),
