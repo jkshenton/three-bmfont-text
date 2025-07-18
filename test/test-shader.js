@@ -20,7 +20,7 @@ function start (font, texture) {
   console.log('Starting shader test...')
   console.log('Font:', font)
   console.log('Texture:', texture)
-  
+
   // Create renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(window.innerWidth, window.innerHeight)
@@ -54,7 +54,7 @@ function start (font, texture) {
 
   // Use inline shaders with the required glsl functions included
   // This bypasses the need for glslify to process the shaders
-  
+
   const vertexShader = `
     attribute vec4 position;
     attribute vec2 uv;
@@ -69,7 +69,7 @@ function start (font, texture) {
       vUv = uv;
       gl_Position = projectionMatrix * modelViewMatrix * position;
     }
-  `;
+  `
 
   // Fragment shader with manually included noise and aastep implementations
   const fragmentShader = `
@@ -191,14 +191,14 @@ function start (font, texture) {
 
       gl_FragColor = vec4(color, alpha);
     }
-  `;
-  
-  createScene(vertexShader, fragmentShader);
+  `
 
-  function createScene(vertexShader, fragmentShader) {
+  createScene(vertexShader, fragmentShader)
+
+  function createScene (vertexShader, fragmentShader) {
     const material = new THREE.RawShaderMaterial({
-      vertexShader: vertexShader,
-      fragmentShader: fragmentShader,
+      vertexShader,
+      fragmentShader,
       uniforms: {
         animate: { value: 1 },
         iGlobalTime: { value: 0 },
@@ -210,81 +210,81 @@ function start (font, texture) {
       depthTest: false
     })
 
-  console.log('Material created:', material)
-  console.log('Vertex shader:', material.vertexShader)
-  console.log('Fragment shader:', material.fragmentShader)
+    console.log('Material created:', material)
+    console.log('Vertex shader:', material.vertexShader)
+    console.log('Fragment shader:', material.fragmentShader)
 
-  const text = new THREE.Mesh(geom, material)
+    const text = new THREE.Mesh(geom, material)
 
-  // scale it down so it fits in our 3D units
-  const textAnchor = new THREE.Object3D()
-  textAnchor.scale.multiplyScalar(-0.005)
-  textAnchor.add(text)
-  scene.add(textAnchor)
+    // scale it down so it fits in our 3D units
+    const textAnchor = new THREE.Object3D()
+    textAnchor.scale.multiplyScalar(-0.005)
+    textAnchor.add(text)
+    scene.add(textAnchor)
 
-  console.log('Text mesh created:', text)
-  console.log('Text anchor scale:', textAnchor.scale)
-  console.log('Scene children:', scene.children)
+    console.log('Text mesh created:', text)
+    console.log('Text anchor scale:', textAnchor.scale)
+    console.log('Scene children:', scene.children)
 
-  const duration = 3
-  next()
+    const duration = 3
+    next()
 
-  let time = 0
+    let time = 0
 
-  // Animation loop
-  function animate () {
-    requestAnimationFrame(animate)
+    // Animation loop
+    function animate () {
+      requestAnimationFrame(animate)
 
-    time += 0.016 // approximate delta time
-    material.uniforms.iGlobalTime.value = time
-    material.uniforms.animate.value = time / duration
-    if (time > duration) {
-      time = 0
-      next()
+      time += 0.016 // approximate delta time
+      material.uniforms.iGlobalTime.value = time
+      material.uniforms.animate.value = time / duration
+      if (time > duration) {
+        time = 0
+        next()
+      }
+
+      renderer.render(scene, camera)
     }
 
-    renderer.render(scene, camera)
-  }
+    animate()
 
-  animate()
-
-  // Handle window resize
-  window.addEventListener('resize', function () {
-    camera.aspect = window.innerWidth / window.innerHeight
-    camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
-  })
-
-  function next () {
-    // set new text string
-    geom.update(quote())
-
-    const lines = geom.visibleGlyphs.map(function (glyph) {
-      return glyph.line
+    // Handle window resize
+    window.addEventListener('resize', function () {
+      camera.aspect = window.innerWidth / window.innerHeight
+      camera.updateProjectionMatrix()
+      renderer.setSize(window.innerWidth, window.innerHeight)
     })
 
-    const lineCount = lines.reduce(function (a, b) {
-      return Math.max(a, b)
-    }, 0)
+    function next () {
+    // set new text string
+      geom.update(quote())
 
-    // for each quad, let's give it a vertex attribute
-    // with the line index
-    const lineData = lines.map(function (line) {
+      const lines = geom.visibleGlyphs.map(function (glyph) {
+        return glyph.line
+      })
+
+      const lineCount = lines.reduce(function (a, b) {
+        return Math.max(a, b)
+      }, 0)
+
+      // for each quad, let's give it a vertex attribute
+      // with the line index
+      const lineData = lines.map(function (line) {
       // map to 0..1 for attribute
-      const t = lineCount <= 1 ? 1 : (line / (lineCount - 1))
-      // quad - 4 verts
-      return [t, t, t, t]
-    }).reduce(function (a, b) {
-      return a.concat(b)
-    }, [])
+        const t = lineCount <= 1 ? 1 : (line / (lineCount - 1))
+        // quad - 4 verts
+        return [t, t, t, t]
+      }).reduce(function (a, b) {
+        return a.concat(b)
+      }, [])
 
-    // update the "line" vertex attribute
-    geom.setAttribute('line', new THREE.BufferAttribute(new Float32Array(lineData), 1))
+      // update the "line" vertex attribute
+      geom.setAttribute('line', new THREE.BufferAttribute(new Float32Array(lineData), 1))
 
-    // center the text
-    const layout = geom.layout
-    text.position.x = -layout.width / 2
-    text.position.y = layout.height / 2
-  }
+      // center the text
+      const layout = geom.layout
+      text.position.x = -layout.width / 2
+      text.position.y = layout.height / 2
+    }
   } // End of createScene function
 }
