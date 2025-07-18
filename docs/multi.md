@@ -1,11 +1,13 @@
 # Multipage Fonts
 
-See the [test-multi.js](https://github.com/Jam3/three-bmfont-text/blob/master/test/test-multi.js) for a full example.
+See the [test-multi.js](https://github.com/jkshenton/three-bmfont-text/blob/master/test/test-multi.js) for a full example.
 
 Specify a `multipage` option when updating your text geometry.
 
 ```js
-var geom = createText({ multipage: true, ... })
+import createText from 'three-bmfont-text'
+
+const geom = createText({ multipage: true, ... })
 geom.update('foobar')
 ```
 
@@ -26,9 +28,9 @@ This will generate a new shader with N number of texture samplers. Some devices 
 *Note:* `RawShaderMaterial` is required in order to support a wide range of ThreeJS versions.
 
 ```js
-var Shader = require('three-bmfont-text/shaders/multipage')
+import multipageShader from 'three-bmfont-text/shaders/multipage.js'
 
-var material = new THREE.RawShaderMaterial(Shader({
+const material = new THREE.RawShaderMaterial(multipageShader({
   textures: fontAtlasPages,
   opacity: 0.25,
   color: 0xff0000

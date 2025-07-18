@@ -8,18 +8,18 @@
 
 Bitmap font rendering for ThreeJS, batching glyphs into a single BufferGeometry. Supports word-wrapping, letter spacing, kerning, [signed distance fields](./docs/sdf.md) with standard derivatives, [multi-channel signed distance fields](./docs/sdf.md#msdf-shader), multi-texture fonts, and more. About 12kb after minification.
 
-The latest `3.x` version works on Three r109 and beyond. For legacy support (e.g. Three r69-73, r79-108), please use version `three-bmfont-text@2.3.0`.
+The latest `4.x` version uses ES modules and works with modern Three.js versions. The `3.x` version works on Three r109 and beyond with CommonJS. For legacy support (e.g. Three r69-73, r79-108), please use version `three-bmfont-text@2.3.0`.
 
 Below is an example that uses [load-bmfont](https://www.npmjs.com/package/load-bmfont) to parse BMFont files on the fly with XHR:
 
 ```js
-var createGeometry = require('three-bmfont-text')
-var loadFont = require('load-bmfont')
+import createGeometry from 'three-bmfont-text'
+import loadFont from 'load-bmfont'
 
 loadFont('fonts/Arial.fnt', function(err, font) {
   // create a geometry of packed bitmap glyphs, 
   // word wrapped to 300px and right-aligned
-  var geometry = createGeometry({
+  const geometry = createGeometry({
     width: 300,
     align: 'right',
     font: font
@@ -35,17 +35,17 @@ loadFont('fonts/Arial.fnt', function(err, font) {
   console.log(geometry.layout.descender)
     
   // the texture atlas containing our glyphs
-  var textureLoader = new THREE.TextureLoader();
+  const textureLoader = new THREE.TextureLoader();
   textureLoader.load('fonts/Arial.png', function (texture) {
     // we can use a simple ThreeJS material
-    var material = new THREE.MeshBasicMaterial({
+    const material = new THREE.MeshBasicMaterial({
       map: texture,
       transparent: true,
       color: 0xaaffff
     })
 
     // now do something with our mesh!
-    var mesh = new THREE.Mesh(geometry, material)
+    const mesh = new THREE.Mesh(geometry, material)
   })
 })
 ```
@@ -109,7 +109,7 @@ This is an array of `{ line, position, index, data }` objects, [see here](https:
 To run/build the demos:
 
 ```sh
-git clone https://github.com/Jam3/three-bmfont-text.git
+git clone https://github.com/jkshenton/three-bmfont-text.git
 cd three-bmfont-text
 npm install
 ```
@@ -161,6 +161,17 @@ See [text-modules](https://github.com/mattdesl/text-modules) for more text and f
 
 ## Change Log
 
+- `4.0.1`
+
+  - Fixed shader loading in test examples
+  - Updated documentation to reflect ES module usage patterns
+  - Added inline shader implementations to handle glslify compatibility issues
+  
+- `4.0.0`
+
+  - Migrated to ES modules (import/export syntax)
+  - Updated shader loading for ES module compatibility
+  
 - `3.0.0`
 
   - Fixed `BufferAttribute` problems in new ThreeJS

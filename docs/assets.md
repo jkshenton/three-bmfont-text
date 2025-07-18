@@ -59,9 +59,9 @@ Or you can parse various font formats on the fly in Node and the browser.
 For convenience, the [load-bmfont](https://www.npmjs.com/package/load-bmfont) module wraps the above parsers for Node/Browser and provides fallbacks for XHR1.0 browsers.
 
 ```js
-var load = require('load-bmfont')
+import loadBmFont from 'load-bmfont'
  
-load('fonts/Arial-32.fnt', function(err, font) {
+loadBmFont('fonts/Arial-32.fnt', function(err, font) {
   if (err)
     throw err
   
@@ -89,8 +89,8 @@ pack-bmfonts fonts/*.{xml,fnt} > fonts/all.bin
 Then, a XHR2.0 implementation for unpacking in a browser (with Browserify) might look like this:
 
 ```js
-var xhr = require('xhr')
-var unpack = require('unpack-bmfonts')
+import xhr from 'xhr'
+import unpack from 'unpack-bmfonts'
 
 xhr({
   url: 'fonts/all.bin',

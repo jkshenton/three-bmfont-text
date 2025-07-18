@@ -26,9 +26,9 @@ Options:
 *Note:* `RawShaderMaterial` is required in order to support a wide range of ThreeJS versions.
 
 ```js
-var Shader = require('three-bmfont-text/shaders/sdf')
+import sdfShader from 'three-bmfont-text/shaders/sdf.js'
 
-var material = new THREE.RawShaderMaterial(Shader({
+const material = new THREE.RawShaderMaterial(sdfShader({
   map: fontAtlas,
   side: THREE.DoubleSide,
   transparent: true,
@@ -57,9 +57,9 @@ Or, if you are feeling more ambitious, you can use the underlying [msdfgen](http
 To use the files with `three-bmfont-text`, you can require the `msdf` shader much like the above SDF shader:
 
 ```js
-var MSDFShader = require('three-bmfont-text/shaders/msdf')
+import msdfShader from 'three-bmfont-text/shaders/msdf.js'
 
-var material = new THREE.RawShaderMaterial(MSDFShader({
+const material = new THREE.RawShaderMaterial(msdfShader({
   map: fontAtlas,
   side: THREE.DoubleSide,
   transparent: true,
